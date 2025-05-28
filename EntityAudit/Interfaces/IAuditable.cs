@@ -1,3 +1,5 @@
+using System;
+
 namespace EntityAudit.Interfaces;
 
 public interface IAuditable

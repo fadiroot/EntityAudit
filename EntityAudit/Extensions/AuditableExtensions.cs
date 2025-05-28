@@ -1,3 +1,4 @@
+using System;
 using EntityAudit.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
