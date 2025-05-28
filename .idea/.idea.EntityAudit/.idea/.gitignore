@@ -1,13 +1,35 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Rider ignored files
-/projectSettingsUpdater.xml
-/contentModel.xml
-/.idea.EntityAudit.iml
-/modules.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+# .NET build/output
+bin/
+obj/
+
+# IDE files
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+
+# NuGet
+.nuget/
+*.nupkg
+packages/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local development
+appsettings.Development.json
+
+# Test results
+TestResults/
+*.trx
+
+# Rider
+*.sln.iml
+
+# ReSharper
+_ReSharper.*
