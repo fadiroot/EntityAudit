@@ -4,7 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-
+permissions:
+  contents: write 
+  packages: write  
 env:
   CS_PROJ_PATH: EntityAudit/EntityAudit.csproj
 
