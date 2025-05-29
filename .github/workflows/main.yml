@@ -93,7 +93,6 @@ jobs:
             --skip-duplicate
 
       - name: Publish to NuGet.org
-        if: needs.build.outputs.CommitsSinceVersionSource > 0 && secrets.NUGET_API_KEY != ''
         run: |
           dotnet nuget push ./artifacts/*.nupkg \
             --api-key ${{ secrets.NUGET_API_KEY }} \
