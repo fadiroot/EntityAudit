@@ -17,51 +17,51 @@ jobs:
       PackagePath: ${{ steps.find-package.outputs.path }}
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.10.2
-      with:
-        versionSpec: 5.x
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.10.2
+        with:
+          versionSpec: 5.x
 
-    - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v0.10.2
-      id: gitversion
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0.10.2
+        id: gitversion
 
-    - name: Display version info
-      run: |
-        echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
-        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
+      - name: Display version info
+        run: |
+          echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
+          echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.CS_PROJ_PATH }}
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.CS_PROJ_PATH }}
 
-    - name: Build solution
-      run: dotnet build ${{ env.CS_PROJ_PATH }} --configuration Release --no-restore
+      - name: Build solution
+        run: dotnet build ${{ env.CS_PROJ_PATH }} --configuration Release --no-restore
 
-    - name: Pack NuGet package
-      run: dotnet pack ${{ env.CS_PROJ_PATH }} -p:Version=${{ steps.gitversion.outputs.SemVer }} -c Release --no-build
+      - name: Pack NuGet package
+        run: dotnet pack ${{ env.CS_PROJ_PATH }} -p:Version=${{ steps.gitversion.outputs.SemVer }} -c Release --no-build
 
-    - name: Find package path
-      id: find-package
-      run: |
-        PACKAGE_PATH=$(find . -type f -name "*.nupkg" | head -n 1)
-        echo "Found package: $PACKAGE_PATH"
-        echo "path=$PACKAGE_PATH" >> "$GITHUB_OUTPUT"
+      - name: Find package path
+        id: find-package
+        run: |
+          PACKAGE_PATH=$(find . -type f -name "*.nupkg" | head -n 1)
+          echo "Found package: $PACKAGE_PATH"
+          echo "path=$PACKAGE_PATH" >> "$GITHUB_OUTPUT"
 
-    - name: Upload NuGet package
-      uses: actions/upload-artifact@v4
-      with:
-        name: nuget-package
-        path: ${{ steps.find-package.outputs.path }}
-        retention-days: 3
+      - name: Upload NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ${{ steps.find-package.outputs.path }}
+          retention-days: 3
 
   publish:
     needs: build
@@ -69,42 +69,46 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: nuget-package
-        path: ./artifacts
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: ./artifacts
 
-    - name: Setup GitHub Packages source
-      run: |
-        dotnet nuget add source \
-          --username ${{ vars.USERNAME }} \
-          --password ${{ secrets.NUGET_PACKAGE_TOKEN }} \
-          --store-password-in-clear-text \
-          --name github \
-          "https://nuget.pkg.github.com/${{ vars.USERNAME }}/index.json"
+      - name: Setup GitHub Packages source
+        run: |
+          dotnet nuget add source \
+            --username ${{ github.repository_owner }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text \
+            --name github \
+            "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
-    - name: Publish to GitHub Packages
-      if: needs.build.outputs.CommitsSinceVersionSource > 0
-      run: |
-        dotnet nuget push ./artifacts/*.nupkg \
-          --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }} \
-          --source github \
-          --skip-duplicate
+      - name: Publish to GitHub Packages
+        if: needs.build.outputs.CommitsSinceVersionSource > 0
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source "github" \
+            --skip-duplicate
 
-    - name: Publish to NuGet.org
-      if: needs.build.outputs.CommitsSinceVersionSource > 0 && secrets.NUGET_API_KEY != ''
-      run: |
-        dotnet nuget push ./artifacts/*.nupkg \
-          --api-key ${{ secrets.NUGET_API_KEY }} \
-          --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate
+      - name: Publish to NuGet.org
+        if: needs.build.outputs.CommitsSinceVersionSource > 0
+        run: |
+          if [ -n "${{ secrets.NUGET_API_KEY }}" ]; then
+            dotnet nuget push ./artifacts/*.nupkg \
+              --api-key ${{ secrets.NUGET_API_KEY }} \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          else
+            echo "NUGET_API_KEY is not set. Skipping NuGet.org publish."
+          fi
 
-    - name: Create GitHub Release
-      if: needs.build.outputs.CommitsSinceVersionSource > 0
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v${{ needs.build.outputs.Version }}
-        name: Release v${{ needs.build.outputs.Version }}
-        files: ./artifacts/*.nupkg
-        generate_release_notes: true
+      - name: Create GitHub Release
+        if: needs.build.outputs.CommitsSinceVersionSource > 0
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.build.outputs.Version }}
+          name: Release v${{ needs.build.outputs.Version }}
+          files: ./artifacts/*.nupkg
+          generate_release_notes: true
