@@ -1,0 +1,13 @@
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/bin/Debug/net9.0/EntityAudit.deps.json
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/bin/Debug/net9.0/EntityAudit.dll
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/bin/Debug/net9.0/EntityAudit.pdb
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.csproj.AssemblyReference.cache
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.GeneratedMSBuildEditorConfig.editorconfig
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.AssemblyInfoInputs.cache
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.AssemblyInfo.cs
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.csproj.CoreCompileInputs.cache
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.sourcelink.json
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.dll
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/refint/EntityAudit.dll
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/EntityAudit.pdb
+/Users/takiacademy/Desktop/EntityAudit/EntityAudit/obj/Debug/net9.0/ref/EntityAudit.dll
