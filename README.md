@@ -15,7 +15,6 @@ A lightweight library to automatically track entity changes (audit logs) in EF C
 - ✅ EF Core 9.0 optimized
 - ✅ Supports custom user tracking via `ICurrentUserService`
 - ✅ Minimal boilerplate (just inherit `AuditableEntity`)
-- ✅ Supports soft delete pattern
 
 ---
 
